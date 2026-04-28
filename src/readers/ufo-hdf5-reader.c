@@ -150,8 +150,12 @@ ufo_hdf5_reader_read (UfoReader *reader,
     }
     else if(priv->n_dims == 4)  // 4d data
     {
-        hsize_t offset[4] = { priv->current % priv->dims[0], priv->current / priv->dims[0], roi_y, 0 };
+        //hsize_t offset[4] = { priv->current % priv->dims[0], priv->current / priv->dims[0], roi_y, 0 };
+        hsize_t offset[4] = { priv->current / priv->dims[1], priv->current % priv->dims[1], roi_y, 0 };
         hsize_t count[4] = { 1, 1, roi_height, requisition->dims[0] };
+        //printf("hdf 4d read: offs = %lld %lld %lld %lld, count = %lld %lld %lld %lld\n",
+        //    offset[0], offset[1], offset[2], offset[3],
+        //    count[0], count[1], count[2], count[3]);
 
         H5Sselect_hyperslab (priv->src_dataspace_id, H5S_SELECT_SET, offset, NULL, count, NULL);
         H5Dread (priv->dataset_id, H5T_NATIVE_FLOAT, dst_dataspace_id, priv->src_dataspace_id, H5P_DEFAULT, data);
